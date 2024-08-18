@@ -7,22 +7,33 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.hablapp.core.MyNavHost
+import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.ui.theme.HablappTheme
+import kotlinx.coroutines.CoroutineScope
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+            val coroutineScope: CoroutineScope = rememberCoroutineScope()
+            val snackbarController = remember { SnackbarController(snackbarHostState, coroutineScope) }
             HablappTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+                ) { innerPadding ->
+                    MyNavHost(
+                        modifier = Modifier.padding(innerPadding),
+                        snackController = snackbarController
                     )
                 }
             }
@@ -30,18 +41,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HablappTheme {
-        Greeting("Android")
-    }
-}

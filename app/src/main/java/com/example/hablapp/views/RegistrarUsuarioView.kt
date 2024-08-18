@@ -1,7 +1,118 @@
 package com.example.hablapp.views
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.hablapp.R
+import com.example.hablapp.components.AppClickeableText
+import com.example.hablapp.components.AppPasswordTextField
+import com.example.hablapp.components.AppTextField
+import com.example.hablapp.components.TitleTextComponent
+import com.example.hablapp.core.SnackbarController
+import com.example.hablapp.models.Usuario
+import com.example.hablapp.services.UsuariosService
+
 
 @Composable
-fun RegistrarUsuarioView() {
+fun RegistrarUsuarioView(
+    onNavigateToLogin: () -> Unit,
+    snackController: SnackbarController,
+    usuariosService: UsuariosService
+) {
+    val context = LocalContext.current
+    val keyboard = LocalSoftwareKeyboardController.current
+
+    val username = remember {
+        mutableStateOf("")
+    }
+    val password = remember {
+        mutableStateOf("")
+    }
+    val email = remember {
+        mutableStateOf("")
+    }
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.bg),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize()
+        )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(28.dp)
+        ) {
+            Spacer(modifier = Modifier.height(20.dp))
+            TitleTextComponent(text = stringResource(id = R.string.app_register_title))
+            Spacer(modifier = Modifier.height(20.dp))
+            AppTextField(
+                text = stringResource(id = R.string.app_username_placeholder),
+                value = username.value,
+                onValuechange = { value -> username.value = value })
+            Spacer(modifier = Modifier.height(10.dp))
+            AppTextField(
+                text = stringResource(id = R.string.app_email_placeholder),
+                value = email.value,
+                onValuechange = { value -> email.value = value })
+            Spacer(modifier = Modifier.height(10.dp))
+            AppPasswordTextField(
+                value = password.value,
+                onValuechange = { value -> password.value = value })
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = {
+
+                keyboard?.hide()
+
+                val errorMessage = usuariosService.registrar(Usuario(
+                    username = username.value,
+                    password = password.value,
+                    email = email.value
+
+                ))
+                if(errorMessage == null) {
+                    username.value = ""
+                    password.value = ""
+                    email.value = ""
+                    snackController.show(context.resources.getString(R.string.cuenta_creada_exitosa))
+                }
+                else {
+                    snackController.show(errorMessage)
+                }
+
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text(text = stringResource(id = R.string.app_register_button))
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            AppClickeableText(
+                initialText = stringResource(id = R.string.ya_tienes_cuenta),
+                annotatedText = stringResource(id = R.string.ingresa_aqui),
+                onTextSelected = { onNavigateToLogin() }
+            )
+        }
+    }
 }

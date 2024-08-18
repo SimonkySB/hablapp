@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Hablapp</string>
+
+    <string name="app_login_title">Login</string>
+    <string name="app_username_placeholder">Username</string>
+    <string name="app_password_placeholder">Password</string>
+    <string name="app_login_button">Login</string>
+    <string name="app_email_placeholder">Email</string>
+    <string name="app_register_title">Crea tu cuenta</string>
+    <string name="app_register_button">Crear cuenta</string>
+    <string name="app_pass_recovery_title">Recuperar Contraseña</string>
+    <string name="app_pass_recovery_button">Recuperar</string>
+
+    <string name="no_tienes_cuenta">¿No tienes una cuenta?</string>
+    <string name="registrate_aqui">Registrate Aquí</string>
+
+    <string name="olvidaste_tu_clave">¿Olvidaste tu clave?</string>
+    <string name="recupera_tu_clave">Recuperala aquí</string>
+
+    <string name="ya_tienes_cuenta">¿Ya tienes una cuenta?</string>
+    <string name="ingresa_aqui">Ingresa aquí</string>
+
+    <string name="cuenta_creada_exitosa">Cuenta creada exitosamente</string>
+    <string name="login_invalid">Usuario o contraseña invalida</string>
+    <string name="login_exitoso">Login Exitoso</string>
+    <string name="recovery_email_sended">Correo de recuperación enviado exitosamente</string>
 </resources>
