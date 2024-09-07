@@ -28,12 +28,13 @@ import com.example.hablapp.R
 import com.example.hablapp.components.AppClickeableText
 import com.example.hablapp.components.AppTextField
 import com.example.hablapp.components.TitleTextComponent
+import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.services.UsuariosService
 
 @Composable
 fun RecuperarClaveView(
-    onNavigateToLogin: () -> Unit,
+    routerManager: RouterManager,
     snackController: SnackbarController,
     usuariosService: UsuariosService
 ) {
@@ -80,7 +81,7 @@ fun RecuperarClaveView(
             AppClickeableText(
                 initialText = stringResource(id = R.string.ya_tienes_cuenta),
                 annotatedText = stringResource(id = R.string.ingresa_aqui),
-                onTextSelected = { onNavigateToLogin() }
+                onTextSelected = { routerManager.onNavigateToLogin() }
             )
         }
     }

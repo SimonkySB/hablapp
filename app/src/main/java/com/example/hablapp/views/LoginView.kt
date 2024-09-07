@@ -1,7 +1,6 @@
 package com.example.hablapp.views
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,14 +28,14 @@ import com.example.hablapp.components.AppClickeableText
 import com.example.hablapp.components.AppPasswordTextField
 import com.example.hablapp.components.AppTextField
 import com.example.hablapp.components.TitleTextComponent
+import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.services.UsuariosService
 
 
 @Composable
 fun LoginView(
-    onNavigateToRegistro: () -> Unit,
-    onNavigateToRecuperarClave: () -> Unit,
+    routerManager: RouterManager,
     snackController: SnackbarController,
     usuariosService: UsuariosService
 ) {
@@ -44,10 +43,10 @@ fun LoginView(
     val context = LocalContext.current
 
     val username = remember {
-        mutableStateOf("")
+        mutableStateOf("user1")
     }
     val password = remember {
-        mutableStateOf("")
+        mutableStateOf("password1")
     }
 
     val onUsernameValueChange: (value: String) -> Unit = {
@@ -65,6 +64,7 @@ fun LoginView(
             snackController.show(context.resources.getString(R.string.login_exitoso))
             username.value = ""
             password.value = ""
+            routerManager.onNavigateToNotas()
         }
         else {
             snackController.show(context.resources.getString(R.string.login_invalid))
@@ -108,7 +108,7 @@ fun LoginView(
             AppClickeableText(
                 initialText = stringResource(id = R.string.olvidaste_tu_clave),
                 annotatedText = stringResource(id = R.string.recupera_tu_clave),
-                onTextSelected = {onNavigateToRecuperarClave()},
+                onTextSelected = {routerManager.onNavigateToRecuperarClave()},
                 textAlign = TextAlign.End
             )
 
@@ -126,7 +126,7 @@ fun LoginView(
             AppClickeableText(
                 initialText =  stringResource(id = R.string.no_tienes_cuenta),
                 annotatedText = stringResource(id = R.string.registrate_aqui),
-                onTextSelected = { onNavigateToRegistro() }
+                onTextSelected = { routerManager.onNavigateToRegistro() }
             )
         }
     }

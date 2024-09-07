@@ -8,7 +8,7 @@
     <string name="app_email_placeholder">Email</string>
     <string name="app_register_title">Crea tu cuenta</string>
     <string name="app_register_button">Crear cuenta</string>
-    <string name="app_pass_recovery_title">Recuperar Contraseña</string>
+    <string name="app_pass_recovery_title">Recuperar Clave</string>
     <string name="app_pass_recovery_button">Recuperar</string>
 
     <string name="no_tienes_cuenta">¿No tienes una cuenta?</string>
@@ -24,4 +24,13 @@
     <string name="login_invalid">Usuario o contraseña invalida</string>
     <string name="login_exitoso">Login Exitoso</string>
     <string name="recovery_email_sended">Correo de recuperación enviado exitosamente</string>
+
+    <string name="notas_title">Mis Notas</string>
+    <string name="agrega_notas">AGREGAR NOTA</string>
+    <string name="guardar_nota">GUARDAR</string>
+    <string name="eliminar_nota">ELIMINAR</string>
+    <string name="reproducir_nota">REPRODUCIR</string>
+    <string name="titulo_nota_lbl">Titulo</string>
+    <string name="descripcion_nota_lbl">Descripcion</string>
+    <string name="fecha_nota_lbl">Fecha de Creación</string>
 </resources>

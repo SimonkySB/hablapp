@@ -30,6 +30,7 @@ import com.example.hablapp.components.AppClickeableText
 import com.example.hablapp.components.AppPasswordTextField
 import com.example.hablapp.components.AppTextField
 import com.example.hablapp.components.TitleTextComponent
+import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.models.Usuario
 import com.example.hablapp.services.UsuariosService
@@ -37,7 +38,7 @@ import com.example.hablapp.services.UsuariosService
 
 @Composable
 fun RegistrarUsuarioView(
-    onNavigateToLogin: () -> Unit,
+    routerManager: RouterManager,
     snackController: SnackbarController,
     usuariosService: UsuariosService
 ) {
@@ -111,7 +112,7 @@ fun RegistrarUsuarioView(
             AppClickeableText(
                 initialText = stringResource(id = R.string.ya_tienes_cuenta),
                 annotatedText = stringResource(id = R.string.ingresa_aqui),
-                onTextSelected = { onNavigateToLogin() }
+                onTextSelected = { routerManager.onNavigateToLogin() }
             )
         }
     }
