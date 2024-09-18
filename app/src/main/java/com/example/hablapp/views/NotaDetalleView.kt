@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,16 +28,16 @@ import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.core.fechaConHora
 import com.example.hablapp.models.Nota
-import com.example.hablapp.services.NotasService
-import com.example.hablapp.services.UsuariosService
+import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.NotasDBManager
 import java.util.Date
 
 @Composable
 fun NotaDetalleView(
     routerManager: RouterManager,
     snackController: SnackbarController,
-    usuariosService: UsuariosService,
-    notasService: NotasService,
+    notasDbManager: NotasDBManager,
+    authManager: AuthManager,
     nota: Nota?
 ) {
     val (titulo, setTitulo) = remember {
@@ -50,7 +51,13 @@ fun NotaDetalleView(
         mutableStateOf(nota?.fechaCreacion ?: Date())
     }
 
-
+    LaunchedEffect(nota) {
+        nota?.let {
+            setTitulo(it.titulo)
+            setDescripcion(it.descripcion)
+            setFecha(it.fechaCreacion)
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -77,7 +84,8 @@ fun NotaDetalleView(
             if (nota != null) {
                 Button(
                     onClick = {
-                        notasService.eliminarNota(nota.id)
+
+                        notasDbManager.eliminarNota(nota.key ?: "")
                         routerManager.onNavigateToNotas()
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -116,13 +124,18 @@ fun NotaDetalleView(
             Button(
                 onClick = {
 
-                    val newNota = Nota(titulo = titulo, descripcion = descripcion, fechaCreacion = Date());
+                    val userId = authManager.getCurrentUser()?.uid ?: ""
+                    val newNota = Nota(titulo = titulo, descripcion = descripcion, fechaCreacion = Date(), userId = userId);
 
                     if(nota != null) {
-                        newNota.id = nota.id
+                        newNota.key = nota.key
                         newNota.fechaCreacion = nota.fechaCreacion
+                        notasDbManager.actualizarNota(newNota.key?: "", newNota)
                     }
-                    notasService.agregarNota(newNota)
+                    else {
+                        notasDbManager.agregarNota(newNota)
+                    }
+
                     routerManager.onNavigateToNotas()
                 },
                 modifier = Modifier

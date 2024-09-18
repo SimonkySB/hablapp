@@ -1,5 +1,6 @@
 package com.example.hablapp.views
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,46 +33,29 @@ import com.example.hablapp.components.AppTextField
 import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
-import com.example.hablapp.services.UsuariosService
+import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthRes
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun LoginView(
     routerManager: RouterManager,
     snackController: SnackbarController,
-    usuariosService: UsuariosService
+    authManager: AuthManager
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    val username = remember {
-        mutableStateOf("user1")
+    val email = remember {
+        mutableStateOf("")
     }
     val password = remember {
-        mutableStateOf("password1")
+        mutableStateOf("")
     }
 
-    val onUsernameValueChange: (value: String) -> Unit = {
-        value -> username.value = value
-    }
 
-    val onPasswordValueChange: (value: String) -> Unit = {
-            value -> password.value = value
-    }
-
-    val onLoginClick: () -> Unit = {
-        keyboard?.hide()
-
-        if(usuariosService.login(username = username.value, password = password.value)) {
-            snackController.show(context.resources.getString(R.string.login_exitoso))
-            username.value = ""
-            password.value = ""
-            routerManager.onNavigateToNotas()
-        }
-        else {
-            snackController.show(context.resources.getString(R.string.login_invalid))
-        }
-    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -91,16 +77,16 @@ fun LoginView(
             Spacer(modifier = Modifier.height(20.dp))
 
             AppTextField(
-                text = stringResource(id = R.string.app_username_placeholder),
-                value = username.value,
-                onValuechange = { value -> onUsernameValueChange(value) }
+                text = stringResource(id = R.string.app_email_placeholder),
+                value = email.value,
+                onValuechange = { value -> email.value = value }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             AppPasswordTextField(
                 value = password.value,
-                onValuechange = { value -> onPasswordValueChange(value) }
+                onValuechange = { value -> password.value = value }
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -115,7 +101,11 @@ fun LoginView(
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
-                onClick = { onLoginClick() },
+                onClick = {
+                    scope.launch {
+                        login(email.value, password.value, authManager, keyboard, context, snackController, routerManager);
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = stringResource(id = R.string.app_login_button))
@@ -129,6 +119,33 @@ fun LoginView(
                 onTextSelected = { routerManager.onNavigateToRegistro() }
             )
         }
+    }
+
+}
+
+private suspend fun login(
+    email: String,
+    password: String,
+    authManager: AuthManager,
+    keyboard: SoftwareKeyboardController?,
+    context: Context,
+    snackController: SnackbarController,
+    routerManager: RouterManager
+) {
+    if(email.isNotEmpty() && password.isNotEmpty()){
+        keyboard?.hide()
+        when(val result = authManager.loginWithEmailAndPassword(email, password)){
+            is AuthRes.Success ->{
+                snackController.show(context.resources.getString(R.string.login_exitoso))
+                routerManager.onNavigateToNotas()
+            }
+            is AuthRes.Error -> {
+                snackController.show(context.resources.getString(R.string.login_invalid))
+            }
+        }
+    }
+    else {
+        snackController.show(context.resources.getString(R.string.campos_vacios))
     }
 
 }

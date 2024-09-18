@@ -1,6 +1,10 @@
 package com.example.hablapp.core
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -9,69 +13,83 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.hablapp.services.NotasService
-import com.example.hablapp.services.UsuariosService
+import com.example.hablapp.models.Nota
+import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.NotasDBManager
 import com.example.hablapp.views.LoginView
 import com.example.hablapp.views.NotaDetalleView
 import com.example.hablapp.views.NotasView
 import com.example.hablapp.views.RecuperarClaveView
 import com.example.hablapp.views.RegistrarUsuarioView
+import com.google.firebase.auth.FirebaseUser
 
 @Composable
 fun MyNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     snackController: SnackbarController,
-    usuariosService: UsuariosService = viewModel(),
-    notasService: NotasService = viewModel()
+    authManager: AuthManager = AuthManager()
 ){
     val routerManager = RouterManager(navController);
+    val user: FirebaseUser? = authManager.getCurrentUser()
+
+    val notasDbManager = NotasDBManager()
+
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavScreen.Login.route
+        startDestination = if(user == null) NavScreen.Login.route else NavScreen.Notas.route
     ) {
         composable(NavScreen.Login.route) {
             LoginView(
                 routerManager = routerManager,
                 snackController = snackController,
-                usuariosService = usuariosService
+                authManager = authManager
             )
         }
         composable(NavScreen.RegistrarUsuario.route){
             RegistrarUsuarioView(
                 routerManager = routerManager,
                 snackController = snackController,
-                usuariosService = usuariosService
+                authManager = authManager
             )
         }
         composable(NavScreen.RecuperarClave.route) {
             RecuperarClaveView(
                 routerManager = routerManager,
-                snackController = snackController,
-                usuariosService = usuariosService
+                snackController = snackController
             )
         }
         composable(NavScreen.Notas.route) {
             NotasView(
                 routerManager = routerManager,
                 snackController = snackController,
-                usuariosService = usuariosService,
-                notasService = notasService
+                notasDbManager = notasDbManager,
+                authManager = authManager
             )
         }
         composable(
             route = NavScreen.NotasDetalle("{notaId}").route,
             arguments = listOf(navArgument("notaId") {type = NavType.StringType})
         ) { backStackEntry ->
-            val notaId = backStackEntry.arguments?.getString("notaId")?.toIntOrNull()
-            val nota = notaId?.let { id -> notasService.obtenerNotaPorId(id) }
+            val notaId = backStackEntry.arguments?.getString("notaId")
+
+            val (nota, setNota) = remember {
+                mutableStateOf<Nota?>(null)
+            }
+
+            val coroutineScope = rememberCoroutineScope()
+            LaunchedEffect(notaId) {
+                notaId?.let {
+                    setNota(notasDbManager.obtenerNotaPorId(notaId))
+                }
+            }
 
             NotaDetalleView(
                 routerManager = routerManager,
                 snackController = snackController,
-                usuariosService = usuariosService,
-                notasService = notasService,
+                authManager = authManager,
+                notasDbManager = notasDbManager,
                 nota = nota
             )
         }
@@ -101,7 +119,7 @@ class RouterManager(navController: NavHostController) {
     fun onNavigateToNotas() {
         _navController.navigate(NavScreen.Notas.route)
     }
-    fun onNavigateToNotaDetalle(notaId: Int) {
-        _navController.navigate(NavScreen.NotasDetalle(notaId.toString()).route)
+    fun onNavigateToNotaDetalle(notaId: String) {
+        _navController.navigate(NavScreen.NotasDetalle(notaId).route)
     }
 }

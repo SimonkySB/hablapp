@@ -21,6 +21,7 @@
     <string name="ingresa_aqui">Ingresa aquí</string>
 
     <string name="cuenta_creada_exitosa">Cuenta creada exitosamente</string>
+    <string name="campos_vacios">Hay campos vacios</string>
     <string name="login_invalid">Usuario o contraseña invalida</string>
     <string name="login_exitoso">Login Exitoso</string>
     <string name="recovery_email_sended">Correo de recuperación enviado exitosamente</string>

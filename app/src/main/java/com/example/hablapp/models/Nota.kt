@@ -4,8 +4,9 @@ import java.util.Date
 
 
 data class Nota(
-    var id: Int = 0,
-    val titulo: String,
-    val descripcion: String,
-    var fechaCreacion: Date
+    var key: String? = null,
+    var titulo: String = "",
+    var descripcion: String = "",
+    var fechaCreacion: Date = Date(),
+    var userId: String = ""
 )

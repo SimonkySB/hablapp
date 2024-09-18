@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "345365981985",
+    "firebase_url": "https://simonky-7f6c7-default-rtdb.firebaseio.com",
+    "project_id": "simonky-7f6c7",
+    "storage_bucket": "simonky-7f6c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345365981985:android:02623689cdda283e61ec60",
+        "android_client_info": {
+          "package_name": "com.example.hablapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPncem1TLrNmmaYF2BpC_Kyjy657V-yA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
