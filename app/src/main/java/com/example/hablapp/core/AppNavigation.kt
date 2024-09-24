@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.hablapp.models.Nota
 import com.example.hablapp.utils.AuthManager
 import com.example.hablapp.utils.NotasDBManager
+import com.example.hablapp.views.LoadingView
 import com.example.hablapp.views.LoginView
 import com.example.hablapp.views.NotaDetalleView
 import com.example.hablapp.views.NotasView
@@ -74,24 +75,41 @@ fun MyNavHost(
         ) { backStackEntry ->
             val notaId = backStackEntry.arguments?.getString("notaId")
 
-            val (nota, setNota) = remember {
-                mutableStateOf<Nota?>(null)
-            }
 
-            val coroutineScope = rememberCoroutineScope()
-            LaunchedEffect(notaId) {
-                notaId?.let {
-                    setNota(notasDbManager.obtenerNotaPorId(notaId))
+            if(notaId == "0"){
+                NotaDetalleView(
+                    routerManager = routerManager,
+                    notasDbManager = notasDbManager,
+                    nota = null
+                )
+            }
+            else {
+                val (nota, setNota) = remember {
+                    mutableStateOf<Nota?>(null)
                 }
+
+                val coroutineScope = rememberCoroutineScope()
+
+                LaunchedEffect(notaId) {
+                    notaId?.let {
+                        setNota(notasDbManager.obtenerNotaPorId(notaId))
+                    }
+                }
+                if(nota != null ){
+                    NotaDetalleView(
+                        routerManager = routerManager,
+                        notasDbManager = notasDbManager,
+                        nota = nota
+                    )
+                }
+                else {
+                    LoadingView()
+                }
+
+
             }
 
-            NotaDetalleView(
-                routerManager = routerManager,
-                snackController = snackController,
-                authManager = authManager,
-                notasDbManager = notasDbManager,
-                nota = nota
-            )
+
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.hablapp.core
+package com.example.hablapp.utils
 
 import java.text.SimpleDateFormat
 import java.util.Date

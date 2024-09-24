@@ -10,46 +10,58 @@ import com.google.firebase.database.getValue
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 import org.jetbrains.annotations.Async.Execute
 
 class NotasDBManager {
 
-    private val databaseRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child("notas")
     private val authManager: AuthManager = AuthManager()
 
-    fun agregarNota(nota: Nota) {
-        val key = databaseRef.push().key
-        if(key != null) {
-            databaseRef.child(key).setValue(nota)
+    fun guardarNota(nota: Nota) {
+        val userId = authManager.getCurrentUser()?.uid ?: return
+        val databaseRef = getDbRef(userId);
+
+        nota.userId = userId
+        if(nota.key == null) {
+            val keyRef = databaseRef.push()
+            nota.key = keyRef.key;
+            keyRef.setValue(nota)
+        }
+        else {
+            databaseRef.child(nota.key!!).setValue(nota)
         }
     }
 
-    fun actualizarNota(key: String, nota: Nota) {
-        databaseRef.child(key).setValue(nota)
-    }
 
     fun obtenerNotas(): Flow<List<Nota>> {
-        val idFilter = authManager.getCurrentUser()?.uid
-        val flow = callbackFlow {
-            val listener = databaseRef.addValueEventListener(object: ValueEventListener {
+        val userId = authManager.getCurrentUser()?.uid ?: return flowOf(emptyList())
+        val databaseRef = getDbRef(userId);
+
+        return callbackFlow {
+
+            val listener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val notas = snapshot.children.mapNotNull { snap ->
                         val nota = snap.getValue(Nota::class.java)
                         snap.key?.let {  nota?.copy(key = it) }
                     }
-                    trySend(notas.filter { it.userId == idFilter }).isSuccess
+                    trySend(notas).isSuccess
                 }
                 override fun onCancelled(error: DatabaseError) {
                     close(error.toException())
                 }
-            })
+            }
+
+            databaseRef.addValueEventListener(listener);
             awaitClose {databaseRef.removeEventListener(listener)}
         }
-        return flow
     }
 
     suspend fun obtenerNotaPorId(key: String): Nota?{
+        val userId = authManager.getCurrentUser()?.uid ?: return null
+        val databaseRef = getDbRef(userId);
+
         return try {
             val res = databaseRef.child(key).get().await()
             res.getValue(Nota::class.java)?.copy(key = key)
@@ -59,6 +71,12 @@ class NotasDBManager {
     }
 
     fun eliminarNota(key: String) {
+        val userId = authManager.getCurrentUser()?.uid ?: return
+        val databaseRef = getDbRef(userId);
         databaseRef.child(key).removeValue()
+    }
+
+    private fun getDbRef(userId: String): DatabaseReference {
+        return FirebaseDatabase.getInstance().reference.child("notas/$userId")
     }
 }

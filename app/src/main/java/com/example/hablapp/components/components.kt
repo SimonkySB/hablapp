@@ -38,7 +38,12 @@ import com.example.hablapp.R
 import com.example.hablapp.ui.theme.Purple40
 
 @Composable
-fun TitleTextComponent(text: String, fontSize: TextUnit = 32.sp, leftIcon: @Composable (() -> Unit)? = null) {
+fun TitleTextComponent(
+    text: String,
+    fontSize: TextUnit = 32.sp,
+    leftIcon: @Composable (() -> Unit)? = null,
+    rightIcon: @Composable (() -> Unit)? = null,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -79,7 +84,9 @@ fun TitleTextComponent(text: String, fontSize: TextUnit = 32.sp, leftIcon: @Comp
                 .width(50.dp)
                 .align(Alignment.CenterVertically)
         ){
-
+            if (rightIcon != null) {
+                rightIcon()
+            }
         }
 
     }

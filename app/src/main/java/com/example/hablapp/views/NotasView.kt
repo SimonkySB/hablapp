@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +37,7 @@ import com.example.hablapp.R
 import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
-import com.example.hablapp.core.fechaConHora
+import com.example.hablapp.utils.fechaConHora
 import com.example.hablapp.models.Nota
 import com.example.hablapp.utils.AuthManager
 import com.example.hablapp.utils.NotasDBManager
@@ -68,7 +70,7 @@ fun NotasView(
             Spacer(modifier = Modifier.height(20.dp))
             TitleTextComponent(
                 text = stringResource(id = R.string.notas_title),
-                leftIcon = {
+                rightIcon = {
                     IconButton(
                         onClick = {
                             authManager.signOut()
@@ -79,8 +81,9 @@ fun NotasView(
                             .align(Alignment.Start)
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Logout",
+                            tint = Color.Red
                         )
                     }
                 }
