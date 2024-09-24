@@ -36,19 +36,14 @@ import androidx.compose.ui.unit.dp
 import com.example.hablapp.R
 import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
-import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.utils.fechaConHora
 import com.example.hablapp.models.Nota
-import com.example.hablapp.utils.AuthManager
-import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.NotasDBManager
 
 @Composable
 fun NotasView(
     routerManager: RouterManager,
-    snackController: SnackbarController,
     notasDbManager: NotasDBManager,
-    authManager: AuthManagerInterface
 ) {
 
     val notas by notasDbManager.obtenerNotas().collectAsState(emptyList())
@@ -71,20 +66,18 @@ fun NotasView(
             Spacer(modifier = Modifier.height(20.dp))
             TitleTextComponent(
                 text = stringResource(id = R.string.notas_title),
-                rightIcon = {
+                leftIcon = {
                     IconButton(
                         onClick = {
-                            authManager.signOut()
-                            routerManager.onNavigateToLogin()
+                            routerManager.onNavigateToHome()
                         },
                         modifier = Modifier
                             .padding(start = 8.dp, top = 8.dp)
                             .align(Alignment.Start)
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Logout",
-                            tint = Color.Red
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
                         )
                     }
                 }
@@ -99,7 +92,6 @@ fun NotasView(
                 Text(text = stringResource(id = R.string.agrega_notas))
             }
             Spacer(modifier = Modifier.height(20.dp))
-
 
 
             notas.forEach {nota ->

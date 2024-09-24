@@ -34,4 +34,7 @@
     <string name="titulo_nota_lbl">Titulo</string>
     <string name="descripcion_nota_lbl">Descripcion</string>
     <string name="fecha_nota_lbl">Fecha de Creación</string>
+    <string name="ir_notas">NOTAS</string>
+    <string name="salir">SALIR</string>
+    <string name="localizacion">BUSCAR COORDENADAS</string>
 </resources>

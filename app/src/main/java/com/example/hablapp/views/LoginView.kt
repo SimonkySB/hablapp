@@ -138,7 +138,7 @@ private suspend fun login(
         when(val result = authManager.loginWithEmailAndPassword(email, password)){
             is AuthRes.Success ->{
                 snackController.show(context.resources.getString(R.string.login_exitoso))
-                routerManager.onNavigateToNotas()
+                routerManager.onNavigateToHome()
             }
             is AuthRes.Error -> {
                 snackController.show(context.resources.getString(R.string.login_invalid))

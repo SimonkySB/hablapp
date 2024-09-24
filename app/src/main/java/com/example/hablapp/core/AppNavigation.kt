@@ -16,6 +16,7 @@ import com.example.hablapp.models.Nota
 import com.example.hablapp.utils.AuthManager
 import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.NotasDBManager
+import com.example.hablapp.views.HomeView
 import com.example.hablapp.views.LoadingView
 import com.example.hablapp.views.LoginView
 import com.example.hablapp.views.NotaDetalleView
@@ -43,7 +44,7 @@ fun MyNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = if(user == null) NavScreen.Login.route else NavScreen.Notas.route
+        startDestination = if(user == null) NavScreen.Login.route else NavScreen.Home.route
     ) {
         composable(NavScreen.Login.route) {
             LoginView(
@@ -66,12 +67,16 @@ fun MyNavHost(
                 authManager = authManager
             )
         }
+        composable(NavScreen.Home.route) {
+            HomeView(
+                routerManager = routerManager,
+                authManager = authManager
+            )
+        }
         composable(NavScreen.Notas.route) {
             NotasView(
                 routerManager = routerManager,
-                snackController = snackController,
-                notasDbManager = notasDbManager,
-                authManager = authManager
+                notasDbManager = notasDbManager
             )
         }
         composable(
@@ -124,6 +129,7 @@ sealed class NavScreen(val route: String) {
     object RegistrarUsuario: NavScreen("registro")
     object RecuperarClave: NavScreen("recuperar-clave")
     object Notas: NavScreen("notas")
+    object Home: NavScreen("home")
     class NotasDetalle(val notaId: String): NavScreen("notas-detalle/{notaId}".replace(oldValue = "{notaId}", newValue = notaId))
 }
 
@@ -144,5 +150,8 @@ class RouterManager(navController: NavHostController) {
     }
     fun onNavigateToNotaDetalle(notaId: String) {
         _navController.navigate(NavScreen.NotasDetalle(notaId).route)
+    }
+    fun onNavigateToHome() {
+        _navController.navigate(NavScreen.Home.route)
     }
 }
