@@ -34,6 +34,16 @@ class AuthManager {
         }
     }
 
+    suspend fun recuperarClave(email: String) : AuthRes<Void> {
+        return try {
+            val result = auth.sendPasswordResetEmail(email).await()
+            AuthRes.Success(result)
+        } catch(e: Exception) {
+            AuthRes.Error(e.message ?: "Error el registrar el usuario")
+        }
+
+    }
+
     fun signOut() {
         auth.signOut()
     }

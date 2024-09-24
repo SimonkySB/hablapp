@@ -1,5 +1,6 @@
 package com.example.hablapp.views
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,15 +31,19 @@ import com.example.hablapp.components.AppTextField
 import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
+import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthRes
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecuperarClaveView(
     routerManager: RouterManager,
-    snackController: SnackbarController
+    snackController: SnackbarController,
+    authManager: AuthManager
 ) {
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
-
+    val scope = rememberCoroutineScope()
     val email = remember {
         mutableStateOf("")
     }
@@ -66,9 +73,9 @@ fun RecuperarClaveView(
             Spacer(modifier = Modifier.height(20.dp))
             Button(onClick = {
 
-                keyboard?.hide()
-                snackController.show(context.resources.getString(R.string.recovery_email_sended))
-                email.value = ""
+                scope.launch {
+                    recuperarClave(email.value, authManager, keyboard, context, snackController, routerManager)
+                }
 
             }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = stringResource(id = R.string.app_pass_recovery_button))
@@ -80,5 +87,30 @@ fun RecuperarClaveView(
                 onTextSelected = { routerManager.onNavigateToLogin() }
             )
         }
+    }
+}
+
+
+private suspend fun recuperarClave(
+    email: String,
+    authManager: AuthManager,
+    keyboard: SoftwareKeyboardController?,
+    context: Context,
+    snackController: SnackbarController,
+    routerManager: RouterManager
+) {
+    if(email.isNotEmpty()){
+        keyboard?.hide()
+        when(val result = authManager.recuperarClave(email)){
+            is AuthRes.Success -> {
+                snackController.show(context.resources.getString(R.string.recovery_email_sended))
+                routerManager.onNavigateToLogin()
+            }
+            is AuthRes.Error -> {
+                snackController.show("Error: ${result.errorMessage}")
+            }
+        }
+    } else {
+        snackController.show(context.resources.getString(R.string.campos_vacios))
     }
 }

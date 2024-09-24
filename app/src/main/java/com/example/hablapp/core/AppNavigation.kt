@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -58,7 +57,8 @@ fun MyNavHost(
         composable(NavScreen.RecuperarClave.route) {
             RecuperarClaveView(
                 routerManager = routerManager,
-                snackController = snackController
+                snackController = snackController,
+                authManager = authManager
             )
         }
         composable(NavScreen.Notas.route) {

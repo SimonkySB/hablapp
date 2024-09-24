@@ -120,8 +120,4 @@ private suspend fun register(
     } else {
         snackController.show(context.resources.getString(R.string.campos_vacios))
     }
-
-
-
-
 }
