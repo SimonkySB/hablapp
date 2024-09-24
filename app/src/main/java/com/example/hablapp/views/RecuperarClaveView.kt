@@ -32,6 +32,7 @@ import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.AuthRes
 import kotlinx.coroutines.launch
 
@@ -39,7 +40,7 @@ import kotlinx.coroutines.launch
 fun RecuperarClaveView(
     routerManager: RouterManager,
     snackController: SnackbarController,
-    authManager: AuthManager
+    authManager: AuthManagerInterface
 ) {
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -93,7 +94,7 @@ fun RecuperarClaveView(
 
 private suspend fun recuperarClave(
     email: String,
-    authManager: AuthManager,
+    authManager: AuthManagerInterface,
     keyboard: SoftwareKeyboardController?,
     context: Context,
     snackController: SnackbarController,

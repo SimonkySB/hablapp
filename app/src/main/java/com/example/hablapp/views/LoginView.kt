@@ -34,6 +34,7 @@ import com.example.hablapp.components.TitleTextComponent
 import com.example.hablapp.core.RouterManager
 import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.AuthRes
 import kotlinx.coroutines.launch
 
@@ -42,7 +43,7 @@ import kotlinx.coroutines.launch
 fun LoginView(
     routerManager: RouterManager,
     snackController: SnackbarController,
-    authManager: AuthManager
+    authManager: AuthManagerInterface
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -126,7 +127,7 @@ fun LoginView(
 private suspend fun login(
     email: String,
     password: String,
-    authManager: AuthManager,
+    authManager: AuthManagerInterface,
     keyboard: SoftwareKeyboardController?,
     context: Context,
     snackController: SnackbarController,

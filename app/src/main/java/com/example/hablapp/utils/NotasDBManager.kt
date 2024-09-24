@@ -4,19 +4,19 @@ import com.example.hablapp.models.Nota
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
-import org.jetbrains.annotations.Async.Execute
 
-class NotasDBManager {
 
-    private val authManager: AuthManager = AuthManager()
+class NotasDBManager(
+    private val authManager: AuthManagerInterface,
+    private val databaseRef: DatabaseReference
+) {
+
 
     fun guardarNota(nota: Nota) {
         val userId = authManager.getCurrentUser()?.uid ?: return
@@ -77,6 +77,6 @@ class NotasDBManager {
     }
 
     private fun getDbRef(userId: String): DatabaseReference {
-        return FirebaseDatabase.getInstance().reference.child("notas/$userId")
+        return databaseRef.child("notas/$userId")
     }
 }

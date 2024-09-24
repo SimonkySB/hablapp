@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.hablapp.models.Nota
 import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.NotasDBManager
 import com.example.hablapp.views.LoadingView
 import com.example.hablapp.views.LoginView
@@ -22,18 +23,22 @@ import com.example.hablapp.views.NotasView
 import com.example.hablapp.views.RecuperarClaveView
 import com.example.hablapp.views.RegistrarUsuarioView
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+
 
 @Composable
 fun MyNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     snackController: SnackbarController,
-    authManager: AuthManager = AuthManager()
+    authManager: AuthManagerInterface = AuthManager(Firebase.auth)
 ){
     val routerManager = RouterManager(navController);
     val user: FirebaseUser? = authManager.getCurrentUser()
 
-    val notasDbManager = NotasDBManager()
+    val notasDbManager = NotasDBManager(authManager, FirebaseDatabase.getInstance().reference)
 
     NavHost(
         modifier = modifier,

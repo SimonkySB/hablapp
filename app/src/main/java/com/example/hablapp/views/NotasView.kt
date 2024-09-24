@@ -40,6 +40,7 @@ import com.example.hablapp.core.SnackbarController
 import com.example.hablapp.utils.fechaConHora
 import com.example.hablapp.models.Nota
 import com.example.hablapp.utils.AuthManager
+import com.example.hablapp.utils.AuthManagerInterface
 import com.example.hablapp.utils.NotasDBManager
 
 @Composable
@@ -47,7 +48,7 @@ fun NotasView(
     routerManager: RouterManager,
     snackController: SnackbarController,
     notasDbManager: NotasDBManager,
-    authManager: AuthManager
+    authManager: AuthManagerInterface
 ) {
 
     val notas by notasDbManager.obtenerNotas().collectAsState(emptyList())
