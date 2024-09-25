@@ -70,7 +70,8 @@ fun MyNavHost(
         composable(NavScreen.Home.route) {
             HomeView(
                 routerManager = routerManager,
-                authManager = authManager
+                authManager = authManager,
+                snackbarController = snackController
             )
         }
         composable(NavScreen.Notas.route) {
