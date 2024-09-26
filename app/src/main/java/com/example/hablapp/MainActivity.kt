@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
             val coroutineScope: CoroutineScope = rememberCoroutineScope()
             val snackbarController = remember { SnackbarController(snackbarHostState, coroutineScope) }
-            HablappTheme {
+            HablappTheme(darkTheme = false) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
